@@ -1,5 +1,5 @@
 -module(auction_data).
--export([ping/0, start_link/0, init/1, ping/1, handle_call/3, handle_cast/2, stop/0, create_auction/0, add_items/2, get_auctions/0, get_items/1, get_item/2]).
+-export([ping/0, start_link/0, init/1, ping/1, handle_call/3, handle_cast/2, stop/0, create_auction/0, add_items/2, get_auctions/0, get_items/1, get_item/2, remove_auction/1, remove_item/2]).
 
 start_link() ->
     gen_server:start_link({local,?MODULE},?MODULE,[],[]).
@@ -27,6 +27,12 @@ get_items(AuctionId) ->
 get_item(AuctionId, ItemId) ->
     gen_server:call(?MODULE, {get_item, self(), AuctionId, ItemId}).
 
+remove_auction(AuctionId) ->
+    gen_server:call(?MODULE, {remove_auction, self(), AuctionId}).
+
+remove_item(AuctionId, ItemId) ->
+    gen_server:call(?MODULE, {remove_item, self(), AuctionId, ItemId}).
+
 ping(_DbRef) -> {pong}.
 
 handle_call({ping, _Pid}, _From, Data) -> %handle ping
@@ -48,6 +54,14 @@ handle_call({get_items, _Pid, AuctionId}, _From, Data) -> %handle add elements
     {reply, Response, Data};
 handle_call({get_item, _Pid, AuctionId, ItemId}, _From, Data) -> %get an item from auction
     Result = auction_data_helper:get_item(Data, AuctionId, ItemId),
+    Response = auction_data_helper:to_response(Result),
+    {reply, Response, Data};
+handle_call({remove_auction, _Pid, AuctionId}, _From, Data) -> %get an item from auction
+    Result = auction_data_helper:remove_auction(Data, AuctionId),
+    Response = auction_data_helper:to_response(Result),
+    {reply, Response, Data};
+handle_call({remove_item, _Pid, AuctionId, ItemId}, _From, Data) -> %get an item from auction
+    Result = auction_data_helper:remove_item(Data, AuctionId, ItemId),
     Response = auction_data_helper:to_response(Result),
     {reply, Response, Data}.
 handle_cast(stop, Data) ->
