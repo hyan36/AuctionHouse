@@ -1,5 +1,5 @@
 -module(db).
--export([new/0, destroy/1, add/2, delete/2, read/2, match/2,  keys/1, elements/1]).
+-export([new/0, destroy/1, add/2, delete/2, read/2, match/2,  keys/1, elements/1, write/3]).
 
 new() -> ets:new(?MODULE, []).
 
@@ -9,6 +9,10 @@ add(Element, DbRef) ->
     Key =  make_ref(),
     ets:insert(DbRef, {Key, Element}),
     {Key, Element}.
+
+write(Key, Value, DbRef) -> 
+    ets:insert(DbRef, {Key, Value}),
+    ok.
 
 delete(Key, DbRef) -> ets:delete(DbRef, Key).
 

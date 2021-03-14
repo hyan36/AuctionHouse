@@ -4,22 +4,22 @@
 -export([ping/0, stop/0, bid/4, check/2, timer/1, confirm/1]).
 
 ping() -> 
-    gen_server:call(?MODULE, {ping, self()}).
+    gen_server:call({global, ?MODULE}, {ping, self()}).
 stop() ->
-    gen_server:cast(?MODULE, stop).
+    gen_server:cast({global, ?MODULE}, stop).
 
 bid(AuctionId, ItemId, Bid, Bidder) -> 
     Request = {AuctionId,ItemId, Bid, Bidder},
-    gen_server:call(?MODULE, {bid, self(), Request}).
+    gen_server:call({global, ?MODULE}, {bid, self(), Request}).
 
 timer({AuctionId, ItemId, Bid, Bidder}) -> 
     Request = {AuctionId,ItemId, Bid, Bidder},
-    gen_server:cast(?MODULE, {timer, Request}).
+    gen_server:cast({global, ?MODULE}, {timer, Request}).
 
 confirm({AuctionId, ItemId, Bid, Bidder}) -> 
     Request = {AuctionId,ItemId, Bid, Bidder},
     io:format("Trying to confirm bid | Request: ~p  \n", [Request]),
-    gen_server:cast(?MODULE, {confirm, Request}).
+    gen_server:cast({global, ?MODULE}, {confirm, Request}).
 
 ping(_) -> {pong}.
 
@@ -28,7 +28,7 @@ start_link(AuctionId) ->
     case Result of
         {error, _} -> Result;
         {ok, []} -> {error, invalid_auction};
-        {ok,[ItemId|_]} -> gen_server:start_link({local,?MODULE},?MODULE,{AuctionId, ItemId},[])
+        {ok,[ItemId|_]} -> gen_server:start_link({global,?MODULE},?MODULE,{AuctionId, ItemId},[])
     end.
 
 init({AuctionId, ItemId}) ->

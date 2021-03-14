@@ -4,40 +4,40 @@
 -export([create_auction/0, add_items/2, get_auctions/0, get_items/1, get_item/2, remove_auction/1, remove_item/2,lock/0, unlock/0]).
 
 ping() -> 
-    gen_server:call(?MODULE, {ping, self()}).
+    gen_server:call({global, ?MODULE}, {ping, self()}).
 stop() ->
-    gen_server:cast(?MODULE, stop).
+    gen_server:cast({global, ?MODULE}, stop).
 lock() ->
-    gen_server:cast(?MODULE, lock).
+    gen_server:cast({global, ?MODULE}, lock).
 unlock() ->
-    gen_server:cast(?MODULE, unlock).
+    gen_server:cast({global, ?MODULE}, unlock).
 
 create_auction() -> 
-    gen_server:call(?MODULE, {create_auction, self()}).
+    gen_server:call({global, ?MODULE}, {create_auction, self()}).
 
 get_auctions() ->
-    gen_server:call(?MODULE, {get_auctions, self()}).
+    gen_server:call({global, ?MODULE}, {get_auctions, self()}).
 
 add_items(AuctionId, Items) ->
-    gen_server:call(?MODULE, {add_items, self(), AuctionId, Items}).
+    gen_server:call({global, ?MODULE}, {add_items, self(), AuctionId, Items}).
 
 get_items(AuctionId) ->
-    gen_server:call(?MODULE, {get_items, self(), AuctionId}).
+    gen_server:call({global, ?MODULE}, {get_items, self(), AuctionId}).
 
 get_item(AuctionId, ItemId) ->
-    gen_server:call(?MODULE, {get_item, self(), AuctionId, ItemId}).
+    gen_server:call({global, ?MODULE}, {get_item, self(), AuctionId, ItemId}).
 
 remove_auction(AuctionId) ->
-    gen_server:call(?MODULE, {remove_auction, self(), AuctionId}).
+    gen_server:call({global, ?MODULE}, {remove_auction, self(), AuctionId}).
 
 remove_item(AuctionId, ItemId) ->
-    gen_server:call(?MODULE, {remove_item, self(), AuctionId, ItemId}).
+    gen_server:call({global, ?MODULE}, {remove_item, self(), AuctionId, ItemId}).
 
 ping(_DbRef) -> {pong}.
 
 
 start_link() ->
-    gen_server:start_link({local,?MODULE},?MODULE,[],[]).
+    gen_server:start_link({global,?MODULE},?MODULE,[],[]).
 
 init(_Args) -> 
     Data = db:new(),

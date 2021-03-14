@@ -1,0 +1,2 @@
+-module(pubsub).
+-behaviour(gen_server).
