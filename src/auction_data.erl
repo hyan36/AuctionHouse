@@ -84,7 +84,7 @@ handle_call({remove_item, _Pid, AuctionId, ItemId}, _From, State) -> %get an ite
     Response = auction_data_helper:to_response(Result),
     {reply, Response, State}.
     
-handle_cast(stop, Data) ->
+handle_cast(stop, {Data, _}) ->
     db:destroy(Data),
     {stop, normal, Data};
 handle_cast(lock, {Data, _}) ->
