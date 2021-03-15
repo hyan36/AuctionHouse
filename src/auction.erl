@@ -109,7 +109,7 @@ check({AuctionId, ItemId, _, _}, {CAId, CurrentItemId, _, _,  Sold, PastAuctions
 bid({_, _, Bid, Bidder}, {AuctionId, ItemId, CurrentBid, _, Sold, PastAuctions}) 
     when Bid > CurrentBid -> 
         io:format("Bid successfuly ~p | Bid: ~p  | Bidder: ~p \n",[ItemId, Bid, Bidder]),
-        pubsub:publish(AuctionId, {auction_event, {new_bid, ItemId, Bid }}),
+        pubsub:publish(AuctionId, {auction_event, {new_bid, ItemId, Bid, Bidder}}),
         State = {AuctionId, ItemId, Bid, Bidder, Sold, PastAuctions},
         timer({AuctionId, ItemId, Bid, Bidder}),
         {reply, {ok, leading}, State};

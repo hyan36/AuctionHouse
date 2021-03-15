@@ -37,8 +37,8 @@ test_nothing_changed() ->
 test_notification() ->
     auction_data:start_link(),
     pubsub:start_link(),
-    {_, Client1} = client:start_link(client1),
-    {_, Client2} = client:start_link(client2),
+    {_, Client1} = client:start_link(client1, 1000),
+    {_, Client2} = client:start_link(client2, 2000),
     {_,AuctionId} = auction_data:create_auction(),
     {_,[{ItemId, _}]} = auction_data:add_items(AuctionId,[{item1,desc1,100}]),
     io:format("Auction: ~p  Item: ~p \n", [AuctionId, ItemId]),
